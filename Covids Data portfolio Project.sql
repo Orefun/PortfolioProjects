@@ -61,14 +61,57 @@ group by location
 order by HighestDeathsCount desc
 
 
--- Global Numbers
+/*
+Queries used for Tableau Project
+*/
+
+-- Global Numbers 
+
+-- 1. World wide COVID death percentage
 
 select sum(new_cases) total_cases, sum(cast(new_deaths as float)) total_deaths,
 sum(cast(new_deaths as float))/sum(new_cases)*100 as DeathPercentage
 from [Portfolio Project]..CovidDeaths
 where continent is not null
---group by date
 order by 1,2
+
+-- Just a double check based off the data provided
+-- numbers are extremely close so we will keep them - The Second includes "International"  Location
+
+--Select SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, 
+--SUM(cast(new_deaths as int))/SUM(New_Cases)*100 as DeathPercentage
+--From PortfolioProject..CovidDeaths
+--where location = 'World'
+--order by 1,2
+
+-- 2. World continents COVID's death percentage
+
+-- We take these out as they are not inluded in the above queries and want to stay consistent
+
+Select location, SUM(cast(new_deaths as int)) as TotalDeathCount
+From [Portfolio Project]..CovidDeaths
+Where continent is null 
+and location not in ('World', 'European Union', 'International', 'High income', 'upper middle', 'Lower middle income', 'Low income', 'Upper middle income')
+Group by location
+order by TotalDeathCount desc
+
+-- 3. Covid's infection count and percentage per country  ordered by the the highst
+
+Select Location, Population, MAX(total_cases) as HighestInfectionCount,  
+Max((total_cases/population))*100 as PercentPopulationInfected
+From [Portfolio Project]..CovidDeaths
+Group by Location, Population
+order by PercentPopulationInfected desc
+
+-- 4. Covid's day-to-day infection count and percentage per country
+
+Select Location, Population,date, MAX(total_cases) as HighestInfectionCount,  
+Max((total_cases/population))*100 as PercentPopulationInfected
+From [Portfolio Project]..CovidDeaths
+Group by Location, Population, date
+order by PercentPopulationInfected desc
+
+
 
 
 -- Looking at total population vs Vaccinations
@@ -135,3 +178,5 @@ where dea.continent is not null
 
 select* 
 from PercentPopulationVaccinated
+
+
