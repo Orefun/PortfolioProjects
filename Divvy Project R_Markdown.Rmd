@@ -1,0 +1,261 @@
+---
+title: "Portofolio Case Study, Divvy"
+author: "Freid Kholy"
+date: "2023-02"
+output: html_document
+---
+
+### Install the packages you need for this job.
+
+```{r}
+install.packages("tidyverse")
+install.packages("lubridate")
+install.packages("janitor")
+install.packages("skimr")
+```
+
+### Call the librarys
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(skimr)
+```
+
+### Import the data and rename them whith simple names.
+
+```{r Import and rename}
+trips2004 <- read.csv('202004-divvy-tripdata.csv')
+trips2005 <- read.csv('202005-divvy-tripdata.csv')
+trips2006 <- read.csv('202006-divvy-tripdata.csv')
+trips2007 <- read.csv('202007-divvy-tripdata.csv')
+trips2008 <- read.csv('202008-divvy-tripdata.csv')
+trips2009 <- read.csv('202008-divvy-tripdata.csv')
+trips2010 <- read.csv('202010-divvy-tripdata.csv')
+trips2011 <- read.csv('202011-divvy-tripdata.csv')
+trips2012 <- read.csv('202012-divvy-tripdata.csv')
+trips2101 <- read.csv('202101-divvy-tripdata.csv')
+trips2102 <- read.csv('202102-divvy-tripdata.csv')
+trips2103 <- read.csv('202103-divvy-tripdata.csv')
+trips2104 <- read.csv('202104-divvy-tripdata.csv')
+trips2105 <- read.csv('202105-divvy-tripdata.csv')
+trips2106 <- read.csv('202106-divvy-tripdata.csv')
+trips2107 <- read.csv('202107-divvy-tripdata.csv')
+trips2108 <- read.csv('202108-divvy-tripdata.csv')
+trips2109 <- read.csv('202109-divvy-tripdata.csv')
+trips2110 <- read.csv('202110-divvy-tripdata.csv')
+trips2111 <- read.csv('202111-divvy-tripdata.csv')
+trips2112 <- read.csv('202112-divvy-tripdata.csv')
+trips2201 <- read.csv('202201-divvy-tripdata.csv')
+trips2202 <- read.csv('202202-divvy-tripdata.csv')
+trips2203 <- read.csv('202203-divvy-tripdata.csv')
+trips2204 <- read.csv('202204-divvy-tripdata.csv')
+```
+
+#### Check the column names.
+
+Taking a look at the elements of the individual table,
+before merging individual files into one integrated file
+
+Note: the example shows only one, April 2020 file, but a full examination of each files column headers should be pursued
+
+```{r check the column names}
+colnames(trips2004)
+```
+
+#### Take a look at the data table.
+
+Taking a look at the elements of the individual table,
+before merging individual files into one integrated file
+
+Note: the example shows only one, April 2020 file, but a full examination of each files table details should be pursued
+
+```{r look over the table}
+View(trips2004)
+```
+
+#### Check the data format alongside to the column names of each column
+
+Taking a look at the elements of the individual table,
+before merging individual files into one integrated file
+
+Note: the example shows only one, April 2020 file, but a full examination of each files column data format should be pursued
+
+```{r column names and data format}
+str(trips2004)
+```
+
+### Compare_df_cols.
+
+This command let us know if columns will successfully bind together by rows.
+
+As you can see from the results below, We can see that column end_station_id and column start_station_id have different data formats in several columns. From April to November 2020, it is integer, and after December, it is character.
+Integration is possible only when those are changed to the same data format.
+
+```{r compare_df_cols}
+compare_df_cols(trips2004, trips2005, trips2006, trips2007, trips2008, trips2009, trips2010, trips2011, trips2012, trips2101, trips2102, trips2103, trips2104, trips2105, trips2106, trips2107, trips2108, trips2109, trips2110, trips2111, trips2112, trips2201, trips2202, trips2203, trips2204, return = "mismatch")
+```
+
+### Change the integer data to character format.
+
+If the data format is different, integration into one file is impossible, so make the data format matched.
+
+The targeted columns are the end_station_id and end_station_id from April to November.
+
+```{r changing the data fotrmat}
+trips2004 <- mutate(trips2004, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+trips2005 <- mutate(trips2005, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+trips2006 <- mutate(trips2006, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+trips2007 <- mutate(trips2007, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+trips2008 <- mutate(trips2008, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+trips2009 <- mutate(trips2009, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+trips2010 <- mutate(trips2010, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+trips2011 <- mutate(trips2011, end_station_id = as.character(end_station_id), start_station_id = as.character(start_station_id))
+```
+
+#### Check if the data format has changed correctly.
+
+A result of 0_rows means that there is no mismatched data format anymore.
+
+```{r confirming 0 mismatchs}
+compare_df_cols(trips2004, trips2005, trips2006, trips2007, trips2008, trips2009, trips2010, trips2011, trips2012, trips2101, trips2102, trips2103, trips2104, trips2105, trips2106, trips2107, trips2108, trips2109, trips2110, trips2111, trips2112, trips2201, trips2202, trips2203, trips2204, return = "mismatch")
+```
+
+#### Checking if the data format has changed correctly.
+
+As shown in the results below, it can be seen that the data format of the two columns we targeted has been well changed from integer to character.
+
+
+```{r}
+str(trips2004)
+```
+
+### Cobining tables into one integrated file.
+
+Finally!! lets integrate several tables into one integrated file.
+
+```{r}
+trips2004_2204 <- bind_rows(trips2004, trips2005, trips2006, trips2007, trips2008, trips2009, trips2010, trips2011, trips2012, trips2101, trips2102, trips2103, trips2104, trips2105, trips2106, trips2107, trips2108, trips2109, trips2110, trips2111, trips2112, trips2201, trips2202, trips2203, trips2204)
+```
+
+#### Check the integrated file.
+
+Lets see if it is well integrated.
+
+look over the integrated table. The results show a huge single table file with all data integrated from April 2020 to April 2022.
+
+```{r}
+View(trips2004_2204)
+```
+
+### Character to Date-time conversion.
+
+The integration went well and now we have to analyze it.
+However, the data format of the travel start time started_at and the travel end time ended_at; still in the format of character, not in the format of date-time format and should be changed.
+We use 'strptime' function for Date-time Conversion from Character
+
+```{r From character to Date-time conversion}
+trips2004_2204$started_at = strptime(trips2004_2204$started_at, format = "%Y-%m-%d %H:%M:%S")
+trips2004_2204$ended_at = strptime(trips2004_2204$ended_at, format = "%Y-%m-%d %H:%M:%S")
+```
+
+#### See if the data format has changed well.
+
+As you can see, the data format of the target two columns was well changed from character to date-time format.
+If you can check the POSIXlt format, it is done properly.
+
+```{r}
+str(trips2004_2204)
+```
+
+#### The total number of rows and columns.
+
+```{r}
+dim(trips2004_2204)
+```
+
+#### Touch the outline with the summary function.
+
+```{r}
+summary(trips2004_2204)
+```
+
+### Create new columns: "month, year, and day of the week for analysis".
+
+Now, for analysis by month, year, and day of the week, extract separately from the started_at column. We first extract dates only from the started_at column to create new date columns, and then extract months, day, and day of the week.
+
+```{r Creating Date, Month, Day, Day of the week colunms}
+trips2004_2204$date <- as.Date(trips2004_2204$started_at)
+trips2004_2204$year <- format(as.Date(trips2004_2204$date), "%Y")
+trips2004_2204$month <- format(as.Date(trips2004_2204$date), "%m")
+trips2004_2204$day <- format(as.Date(trips2004_2204$date), "%d")
+trips2004_2204$day_of_week <- format(as.Date(trips2004_2204$date), "%A")
+```
+
+### Find the length of each tirp.
+
+Create a ride_length column through summing the difference between ended_at & started_at columns using the 'difftime' function. 
+
+```{r ride length}
+trips2004_2204$ride_length <- difftime(trips2004_2204$ended_at, trips2004_2204$started_at)
+```
+
+#### The current work status.
+
+Lets check if the work so far has gone well.
+
+```{r}
+View(trips2004_2204)
+str(trips2004_2204)
+```
+
+### Let's change the data format of ride_lengh to 'numeric'.
+
+We need to change the format to numeric to analyze and calculate.
+
+When checked using the str function, it changed to numeric.
+
+```{r}
+trips2004_2204$ride_length <- as.numeric(as.character(trips2004_2204$ride_length))
+
+str(trips2004_2204)
+```
+
+### Remove unnecessary values.
+
+remove some unnecessary values: rides with ride_length less than a Zero.
+
+```{r}
+trips2004_2204 <- trips2004_2204[!(trips2004_2204$ride_length<0),]
+```
+
+#### Final inspection.
+
+A final checking before extracting the organized and cleaned integrated file.
+
+NA values can be deleted from R or simply excluded from Tableau. I did not work on R because exclusion from Tableau is simpler.
+
+```{r}
+summary(trips2004_2204)
+summary(trips2004_2204$ride_length)
+```
+### Make a sample from the dataset
+
+Extract a sample of the data set for performing an easy analysis 
+An estimate for the best size of the sample was a 37% of the total integrated file which is equaled to 3,490,668 rows.
+
+```{r}
+F <- sample(1:nrow(trips2004_2204), 3490668)
+trips2004_2204_sample <- trips2004_2204[F,]
+```
+
+
+### File Extraction.
+
+Finally! extract the original integrated file for backup purposes and the sample file for performing the analysis in Tableau.
+
+```{r}
+write.csv(trips2004_2204, "trips2004_2204.csv")
+write(trips2004_2204_sample,"trips2004_2204_sample.csv")
+```
