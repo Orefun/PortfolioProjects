@@ -1,0 +1,301 @@
+---
+title: "Waleed Said Forecasted Data R Markdown"
+author: "Fareid El Kholy"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(repos = c(CRAN = "https://cran.r-project.org"))
+```
+
+## R Markdown
+
+### installing packages
+
+```{r}
+install.packages("readxl")
+install.packages("TSA")
+install.packages("TTR")
+install.packages("tseries")
+install.packages("urca")
+```
+
+### Installing the "AnalyzTS" Package manully
+
+```{r}
+# The installation needs to be manually from the site due to it being removed from the online server, and for the path of the local file to be specified manually
+install.packages("C:/Users/Dr.Haba Al-Ghonaimy/Downloads/AnalyzeTS_2.3.tar.gz",
+                 repos = NULL, type = "source")
+```
+
+### loading needed packages
+
+```{r}
+library(readxl)
+library(urca)
+library(TSA)
+library(TTR)
+library(tseries)
+library(AnalyzeTS)
+```
+
+### Importing the data-set
+
+```{r}
+# The path would be a different one depending on the user computer 
+file_path <- "C:/Users/Dr.Haba Al-Ghonaimy/Downloads/before.xlsx"
+Waleed_Data <- read_excel(file_path)
+```
+
+### Converting the 'Years' column to a Date format column
+
+```{r}
+Waleed_Data$Years <- as.Date(paste(Waleed_Data$Years, "-01-01", sep = ""), 
+                                     format = "%Y-%m-%d")
+str(Waleed_Data)
+```
+
+### Making every XB Time Series
+
+```{r}
+XB1_ts <- ts(Waleed_Data$XB1, frequency = 1)
+XB2_ts <- ts(Waleed_Data$XB2, frequency = 1)
+XB3_ts <- ts(Waleed_Data$XB3, frequency = 1)
+XB4_ts <- ts(Waleed_Data$XB4, frequency = 1)
+XB5_ts <- ts(Waleed_Data$XB5, frequency = 1)
+```
+
+### "Mamedova" & "FVD" models applications:
+
+##### XB1
+
+```{r}
+XB1_MForcast <- fuzzy.ts2(XB1_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                  r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "Abbasov-Mamedova")
+XB1_NForcast <- fuzzy.ts2(XB1_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                          r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "NFTS")
+```
+
+##### XB2
+
+```{r}
+XB2_MForcast <- fuzzy.ts2(XB2_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                  r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "Abbasov-Mamedova")
+XB2_NForcast <- fuzzy.ts2(XB2_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                          r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "NFTS")
+
+```
+
+##### XB3
+
+```{r}
+XB3_MForcast <- fuzzy.ts2(XB3_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                  r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "Abbasov-Mamedova")
+XB3_NForcast <- fuzzy.ts2(XB3_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                          r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "NFTS")
+
+```
+
+##### XB4
+
+```{r}
+XB4_MForcast <- fuzzy.ts2(XB4_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                  r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "Abbasov-Mamedova")
+XB4_NForcast <- fuzzy.ts2(XB4_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                          r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "NFTS")
+
+```
+
+##### XB5
+
+```{r}
+XB5_MForcast <- fuzzy.ts2(XB5_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                  r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "Abbasov-Mamedova")
+XB5_NForcast <- fuzzy.ts2(XB5_ts, n = 7, w = 7, D1 = 0, D2 = 0, C = 0.0001, forecast = 12, 
+                          r = 12, trace = FALSE, plot = TRUE, grid = FALSE, type = "NFTS")
+
+```
+
+### Converting every Time-Series forecasted data into a "Data-Frame" format to preform further analysis
+
+```{r}
+# XB1 "Mamedova" Model
+XB1_MForcast_df <- as.data.frame(XB1_MForcast)
+XB1_MForcast_df <- cbind(XB1_MForcast$interpolate, XB1_MForcast$forecast)
+XB1_MForcast_df <- c(XB1_MForcast$interpolate, XB1_MForcast$forecast)
+# XB1 "FVD" Model
+XB1_NForcast_df <- as.data.frame(XB1_NForcast)
+XB1_NForcast_df <- cbind(XB1_NForcast$interpolate, XB1_NForcast$forecast)
+XB1_NForcast_df <- c(XB1_NForcast$interpolate, XB1_NForcast$forecast)
+
+# XB2 "Mamedova" Model
+XB2_MForcast_df <- as.data.frame(XB2_MForcast)
+XB2_MForcast_df <- cbind(XB2_MForcast$interpolate, XB2_MForcast$forecast)
+XB2_MForcast_df <- c(XB2_MForcast$interpolate, XB2_MForcast$forecast)
+# XB2 "FVD" Model
+XB2_NForcast_df <- as.data.frame(XB2_NForcast)
+XB2_NForcast_df <- cbind(XB2_NForcast$interpolate, XB2_NForcast$forecast)
+XB2_NForcast_df <- c(XB2_NForcast$interpolate, XB2_NForcast$forecast)
+
+# XB3 "Mamedova" Model
+XB3_MForcast_df <- as.data.frame(XB3_MForcast)
+XB3_MForcast_df <- cbind(XB3_MForcast$interpolate, XB3_MForcast$forecast)
+XB3_MForcast_df <- c(XB3_MForcast$interpolate, XB3_MForcast$forecast)
+# XB3 "FVD" Model
+XB3_NForcast_df <- as.data.frame(XB3_NForcast)
+XB3_NForcast_df <- cbind(XB3_NForcast$interpolate, XB3_NForcast$forecast)
+XB3_NForcast_df <- c(XB3_NForcast$interpolate, XB3_NForcast$forecast)
+
+# XB4 "Mamedova" Model
+XB4_MForcast_df <- as.data.frame(XB4_MForcast)
+XB4_MForcast_df <- cbind(XB4_MForcast$interpolate, XB4_MForcast$forecast)
+XB4_MForcast_df <- c(XB4_MForcast$interpolate, XB4_MForcast$forecast)
+# XB4 "FVD" Model
+XB4_NForcast_df <- as.data.frame(XB4_NForcast)
+XB4_NForcast_df <- cbind(XB4_NForcast$interpolate, XB4_NForcast$forecast)
+XB4_NForcast_df <- c(XB4_NForcast$interpolate, XB4_NForcast$forecast)
+
+# XB5 "Mamedova" Model
+XB5_MForcast_df <- as.data.frame(XB5_MForcast)
+XB5_MForcast_df <- cbind(XB5_MForcast$interpolate, XB5_MForcast$forecast)
+XB5_MForcast_df <- c(XB5_MForcast$interpolate, XB5_MForcast$forecast)
+# XB5 "FVD" Model
+XB5_NForcast_df <- as.data.frame(XB5_NForcast)
+XB5_NForcast_df <- cbind(XB5_NForcast$interpolate, XB5_NForcast$forecast)
+XB5_NForcast_df <- c(XB5_NForcast$interpolate, XB5_NForcast$forecast)
+```
+
+### Creating the "Date" column
+
+```{r}
+# Creating a sequence of dates from 2000-01-01 to 2024-12-31
+dates <- seq(as.Date("2000-01-01"), as.Date("2023-12-31"), by = "year")
+
+
+# Convert the dates into a data frame
+dates_df <- data.frame(Date = dates)
+```
+
+### Combining all of the forecasted data alongside with the Date column
+
+```{r}
+combined_data <- cbind(dates_df,
+                       XB1_MForcast_df, XB1_NForcast_df,
+                       XB2_MForcast_df, XB2_NForcast_df,
+                       XB3_MForcast_df, XB3_NForcast_df,
+                       XB4_MForcast_df, XB4_NForcast_df,
+                       XB5_MForcast_df, XB5_NForcast_df)
+
+# Renaming the columns 
+colnames(combined_data) <- c("Date",
+                             "XB1 Mamedova Forecast", "XB1 FVD Forecast",
+                             "XB2 Mamedova Forecast", "XB2 FVD Forecast",
+                             "XB3 Mamedova Forecast", "XB3 FVD Forecast",
+                             "XB4 Mamedova Forecast", "XB4 FVD Forecast",
+                             "XB5 Mamedova Forecast", "XB5 FVD Forecast")
+```
+
+### Creating the Combined Forecasted Data plot
+
+```{r}
+# Calling the needed packages 
+library(tidyr)
+library(ggplot2)
+
+# Pivoting the data
+long_df <- tidyr::pivot_longer(combined_data, cols = -Date, names_to = "Variable", 
+                                 values_to = "Value")
+
+# Plotting the data
+ ggplot(long_df, aes(x = Date, y = Value, color = Variable)) +
+     geom_line() +
+     labs(title = "Forecasted Data",
+          x = "Years",
+          y = "Value") +
+     theme_minimal()
+ 
+```
+
+### Combining the forecasted data and old data in one file
+
+```{r}
+OG_and_Forecasted_df <- data.frame(Date = combined_data$Date,
+                                   XB1 = rep(c(Waleed_Data$XB1, rep(NA, 12))),
+XB1_Mamedova_Forecast = combined_data$`XB1 Mamedova Forecast`,
+XB1_FVD_Forecast = combined_data$`XB1 FVD Forecast`,
+                                   XB2 = rep(c(Waleed_Data$XB2, rep(NA, 12))),
+XB2_Mamedova_Forecast = combined_data$`XB2 Mamedova Forecast`,
+XB2_FVD_Forecast = combined_data$`XB2 FVD Forecast`,
+                                   XB3 = rep(c(Waleed_Data$XB3, rep(NA, 12))),
+XB3_Mamedova_Forecast = combined_data$`XB3 Mamedova Forecast`,
+XB3_FVD_Forecast = combined_data$`XB3 FVD Forecast`,
+                                   XB4 = rep(c(Waleed_Data$XB4, rep(NA, 12))),
+XB4_Mamedova_Forecast = combined_data$`XB4 Mamedova Forecast`,
+XB4_FVD_Forecast = combined_data$`XB4 FVD Forecast`,
+                                   XB5 = rep(c(Waleed_Data$XB5, rep(NA, 12))),
+XB5_Mamedova_Forecast = combined_data$`XB5 Mamedova Forecast`,
+XB5_FVD_Forecast = combined_data$`XB5 FVD Forecast`)
+
+OG_and_Forecasted_df
+```
+
+### Creating the Combined Forecasted Data plot
+
+```{r}
+
+# Pivoting the data
+long_df2 <- tidyr::pivot_longer(OG_and_Forecasted_df, cols = -Date, names_to = "Variable", 
+                                 values_to = "Value")
+
+# Plotting the data
+ ggplot(long_df2, aes(x = Date, y = Value, color = Variable)) +
+     geom_line() +
+     labs(title = "Original + Forecasted Data",
+          x = "Years",
+          y = "Value") +
+     theme_minimal()
+ 
+```
+### Goodness of Fit measures
+```{r}
+#Installing needed package
+install.packages("hydroGOF")
+```
+
+```{r}
+#Calling the needed packages 
+library(zoo)
+library(hydroGOF)
+
+#Creating the "Goodness of Fit" Data-Set
+Goodness_of_Fit_m.df <- data.frame(
+XB1_Mamedova_GOF = gof(sim = OG_and_Forecasted_df$XB1_Mamedova_Forecast, obs = OG_and_Forecasted_df$XB1),
+XB1_FVD_GOF = gof(sim = OG_and_Forecasted_df$XB1_FVD_Forecast, obs = OG_and_Forecasted_df$XB1),
+
+XB2_Mamedova_GOF = gof(sim = OG_and_Forecasted_df$XB2_Mamedova_Forecast, obs = OG_and_Forecasted_df$XB2),
+XB2_FVD_GOF = gof(sim = OG_and_Forecasted_df$XB2_FVD_Forecast, obs = OG_and_Forecasted_df$XB2),
+
+XB3_Mamedova_GOF = gof(sim = OG_and_Forecasted_df$XB3_Mamedova_Forecast, obs = OG_and_Forecasted_df$XB3),
+XB3_FVD_GOF = gof(sim = OG_and_Forecasted_df$XB3_FVD_Forecast, obs = OG_and_Forecasted_df$XB3),
+
+XB4_Mamedova_GOF = gof(sim = OG_and_Forecasted_df$XB4_Mamedova_Forecast, obs = OG_and_Forecasted_df$XB4),
+XB4_FVD_GOF = gof(sim = OG_and_Forecasted_df$XB4_FVD_Forecast, obs = OG_and_Forecasted_df$XB4),
+
+XB5_Mamedova_GOF = gof(sim = OG_and_Forecasted_df$XB5_Mamedova_Forecast, obs = OG_and_Forecasted_df$XB5),
+XB5_FVD_GOF = gof(sim = OG_and_Forecasted_df$XB5_FVD_Forecast, obs = OG_and_Forecasted_df$XB5)
+)
+
+# Showing the data set
+Goodness_of_Fit_m.df
+```
+
+
+### Write the "Combined Forecasted" & "Goodness of Fit" data-frames to a CSV files
+```{r}
+write.csv(OG_and_Forecasted_df , file = "Original & 2 ways Forecast.csv", row.names = FALSE)
+write.csv(Goodness_of_Fit_m.df , file = "The Goodness of Fit for the forecast.csv", row.names = TRUE)
+```
